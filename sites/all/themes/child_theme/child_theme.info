@@ -1,0 +1,7 @@
+name = Child theme
+description = Child theme
+core = 7.x
+base theme = bootstrap
+
+
+stylesheets[all][] = css/styles.css
