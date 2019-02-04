@@ -27,3 +27,23 @@ MORE INFORMATION
 Refer to the "Appearance" section of the README.txt in the Drupal root directory
 for further information on customizing the appearance of Drupal with custom
 themes.
+
+
+
+
+
+
+
+zend_extension=/usr/lib/php/20170718/xdebug.so
+xdebug.remote_autostart = 1
+xdebug.remote_enable = 1
+xdebug.remote_handler = dbgp
+xdebug.remote.port = 9000
+xdebug.remote_host = 127.0.0.1
+xdebug.remote_log = /tmp/xdebug_remote.log
+xdebug.remote_mode = req
+xdebug.remote_connect_back = 1
+xdebug.idkey = PHPSTORM
+xdebug.scream = 0
+xdebug.cli_color = 1
+xdebug.show_local_vars = 1
