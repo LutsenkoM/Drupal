@@ -99,11 +99,20 @@ function current_posts_block_view($delta = '') {
           $block['content'] = t('No posts available.');
         }
         else {
-          // Pass data through theme function.
-          $block['content'] = theme('item_list', array(
-            'items' => $items));
+          //Pass data through theme function.
+          $block['content']['posts'] = array(
+            '#theme' => 'item_list__current_posts__block',
+            '#items' => $items,
+          );
+          //Add a link to the page for more entries.
+          $block['content']['more'] = array(
+            '#theme' => 'more_link__current_posts',
+            '#url' => 'current_posts',
+            '#title' => t('See the full list of current posts.'),
+          );
         }
       }
+
       return $block;
   }
 
@@ -133,11 +142,11 @@ function current_posts_menu() {
     'page arguments' => array('current_posts_form'),
   );
 
-  $items['admin/custom_tab/current_posts_page'] = array(
+  $items['current_posts'] = array(
     'title' => 'Current posts page',
     'page callback' => '_current_posts_page',
     'access arguments' => array('access current_posts content'),
-    'type' => MENU_NORMAL_ITEM, // Will appear in Navigation menu.
+    'type' => MENU_CALLBACK, // Will appear in Navigation menu.
   );
 
   return $items;
@@ -147,6 +156,8 @@ function current_posts_menu() {
  * Custom page callback function, declared in current_posts_menu().
  */
 function _current_posts_page() {
+  drupal_set_title('Current posts');
+
   $result = current_posts_contents('page');
   //Array to contain items for the page to render.
   $items = array();
