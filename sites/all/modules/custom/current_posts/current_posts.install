@@ -1,2 +1,61 @@
 <?php
 
+/** Add table with fields **/
+function current_posts_schema() {
+  $schema ['max_table'] = array(
+    'description' => 'The base table for stocks.',
+    'fields' => array(
+      'productid' => array(
+        'description' => 'The primary identifier for a stock.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'stock' => array(
+        'description' => 'The current stock value.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('productid'),
+  );
+
+  return $schema;
+}
+
+/** Add col 'newcol' in table  **/
+function current_posts_update_1() {
+  db_add_field('max_table', 'newcol', array('type' => 'int'));
+}
+
+/** Add new table  **/
+function current_posts_update_2() {
+    $table = array(
+      'description' => 'The base table for stocks 2.',
+      'fields' => array(
+        'one' => array(
+          'description' => 'The primary identifier for a stock.',
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'two' => array(
+          'description' => 'The current stock value.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+          'default' => 0,
+        ),
+      ),
+      'primary key' => array('one'),
+    );
+
+  db_create_table(max_table_2, $table);
+}
+
+/** Add new col in max_table_2  **/
+function current_posts_update_3() {
+  db_add_field('max_table_2', 'newcol', array('type' => 'int'));
+}
