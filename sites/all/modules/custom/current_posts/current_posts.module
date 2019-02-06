@@ -12,6 +12,14 @@
  * @param arg
  *   Array that holds the current path as returned from arg() function
  */
+function current_posts_preprocess_page(&$variables) {
+
+  $variables['p_page'] = 'Variable from preprocess page module overwrite';
+  $variables['p_page_module'] = 'Variable from preprocess page module ';
+
+}
+
+
 function current_posts_help($path, $arg) {
   switch ($path) {
     case "admin/help#current_posts":
@@ -146,7 +154,7 @@ function current_posts_menu() {
     'title' => 'Current posts page',
     'page callback' => '_current_posts_page',
     'access arguments' => array('access current_posts content'),
-    'type' => MENU_CALLBACK, // Will appear in Navigation menu.
+    'type' => MENU_NORMAL_ITEM, // Will appear in Navigation menu.
   );
 
   return $items;

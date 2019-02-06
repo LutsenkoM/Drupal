@@ -2,7 +2,7 @@
 
 function child_theme_preprocess_page(&$variables) {
 
-  $variables['p_page'] = 'Variable from preprocess page';
+//  $variables['p_page'] = 'Variable from preprocess page';
 
   if (isset($variables['node']->type)) {
     $nodetype = $variables['node']->type;
