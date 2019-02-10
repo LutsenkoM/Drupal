@@ -906,7 +906,7 @@ function taxonomy_term_view($term, $view_mode = 'full', $langcode = NULL) {
 }
 
 /**
- * Process variables for taxonomy-term.tpl.php.
+ * Process variables for taxonomy-term--team.tpl.php.
  */
 function template_preprocess_taxonomy_term(&$variables) {
   $variables['view_mode'] = $variables['elements']['#view_mode'];

@@ -80,6 +80,7 @@
  * @ingroup templates
  */
 ?>
+<?php if($page) { ?>
 <article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
   <?php if ((!$page && !empty($title)) || !empty($title_prefix) || !empty($title_suffix) || $display_submitted): ?>
   <header>
@@ -117,3 +118,4 @@
   <?php print render($content['comments']); ?>
 </article>
 <strong>node.tpl.php</strong>
+<?php } ?>

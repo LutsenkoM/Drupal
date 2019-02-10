@@ -890,7 +890,7 @@ function drupal_find_base_themes($themes, $key, $used_keys = array()) {
  * (see hook_theme() for details). Default templates are implemented with the
  * PHPTemplate rendering engine and are named the same as the theme hook, with
  * underscores changed to hyphens, so for the 'taxonomy_term' theme hook, the
- * default template is 'taxonomy-term.tpl.php'.
+ * default template is 'taxonomy-term--team.tpl.php'.
  *
  * @subsection sub_overriding_theme_hooks Overriding Theme Hooks
  * Themes may also register new theme hooks within a hook_theme()
