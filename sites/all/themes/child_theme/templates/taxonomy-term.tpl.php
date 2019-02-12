@@ -18,7 +18,8 @@
         <?php
         foreach ($members as $member) {
           $display = array('label' => 'hidden');
-          print render(field_view_field('node', $member, 'field_member_link', $display));
+          $member_link = field_view_field('node', $member, 'field_member_link', $display);
+          print render($member_link);
         }
       } ?>
     </div>

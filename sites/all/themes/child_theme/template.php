@@ -4,6 +4,10 @@ function child_theme_preprocess_page(&$vars) {
 
   $vars['p_page'] = 'Variable from preprocess page';
 
+  if(isset($vars['page']['content']['system_main']['no_content'])) {
+    unset($vars['page']['content']['system_main']['no_content']);
+  }
+
   if (isset($vars['node']->type)) {
     $nodetype = $vars['node']->type;
     $vars['theme_hook_suggestions'][] = 'page__' . $nodetype;
@@ -27,12 +31,12 @@ function child_theme_preprocess_node(&$vars) {
     $locations_home = entity_load('taxonomy_term', FALSE, array('vid' => $location_home_id->vid));
 
     $locs_home = array();
-    $loc_array = array();
 
     foreach ($locations_home as $loc_home) {
 
       $sorted_teams = array();
 
+//    Hook_menu, hook_theme. Custom link with homepage blocks
       foreach ($teams_home as $team_home) {
         if ($team_home->field_team_location['und'][0]['tid'] == $loc_home->tid) {
           $sorted_teams[] = $team_home;
@@ -40,8 +44,7 @@ function child_theme_preprocess_node(&$vars) {
       }
 
       $loc_home->teams = $sorted_teams;
-      $loc_array = $loc_home;
-      $locs_home[] = $loc_array;
+      $locs_home[] = $loc_home;
     }
 
     $vars['locations_home'] = $locs_home;
