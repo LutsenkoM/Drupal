@@ -1,0 +1,172 @@
+<?php
+/**
+ * @file
+ * A block module that displays recent blog and forum posts.
+ *
+ * Implements hook_help().
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function homepage_preprocess_page(&$variables) {
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function homepage_block_info() {
+  $blocks['sidebar_content'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Teams block'),
+    'visibility' => BLOCK_VISIBILITY_LISTED,
+    'status' => TRUE,
+    'pages' => 'taxonomy/term/*',
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+
+  $blocks['locations_block'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Locations block'),
+    'visibility' => BLOCK_VISIBILITY_LISTED,
+    'status' => TRUE,
+    'pages' => 'taxonomy/term/*',
+  );
+
+  return $blocks;
+}
+
+function homepage_contents(){
+  $block_content = 'This is block content';
+  return $block_content;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Prepares the contents of the block.
+ */
+function homepage_block_view($delta = '') {
+  switch ($delta) {
+    case 'sidebar_content':
+      $block['subject'] = t('Teams block');
+      if (user_access('access content')) {
+        $block['content'] = homepage_contents();
+      }
+
+      return $block;
+  }
+
+}
+
+/**
+ * Custom content function.
+ *
+ * Set beginning and end dates, retrieve posts from database
+ * saved in that time period.
+ *
+ * @return
+ *   A result set of the targeted posts.
+ */
+//function current_posts_contents(){
+//
+//  //Use Database API to retrieve current posts.
+//  $query = db_select('node', 'n')
+//    ->fields('n', array('nid', 'title', 'created'))
+//    ->condition('status', 1) //Published.
+//    ->orderBy('created', 'DESC'); //Most recent first.
+//
+//  return $query->execute();
+//}
+
+/**
+ * Implements hook_menu().
+ */
+function homepage_menu() {
+  $items = array();
+
+  $items['admin/custom_tab/custom_homepage'] = array(
+    'title' => 'Custom homepage',
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('access administration pages'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('homepage_form'),
+  );
+
+  $items['custom_homepage'] = array(
+    'title' => variable_get('custom_homepage','Custom homepage'),
+    'page callback' => 'homepage_render_page',
+    'access arguments' => array('access current_posts content'),
+    'type' => MENU_NORMAL_ITEM, // Will appear in Navigation menu.
+  );
+
+  return $items;
+}
+
+function homepage_form($form, &$form_state) {
+  $form['custom_homepage'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#default_value' => variable_get('custom_homepage', 'Custom homepage'),
+    '#size' => 100,
+    '#maxlength' => 100,
+    '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_theme().
+ */
+function homepage_theme($existing, $type, $theme, $path) {
+    return array(
+    'custom_homepage_theme' => array(
+      'variables' => array('locations' => null),
+      'template' => 'templates/custom_homepage'
+    )
+  );
+}
+
+function homepage_locations() {
+  $location_home_id = taxonomy_vocabulary_machine_name_load('location');
+  $locations_home = entity_load('taxonomy_term', FALSE, array('vid' => $location_home_id->vid));
+
+  $locs_home = array();
+
+  foreach ($locations_home as $loc_home) {
+    $sorted_teams = array();
+    $query = db_select('field_data_field_team_location','n')
+      ->fields('n', array('entity_id') )
+      ->condition('field_team_location_tid', $loc_home->tid);
+
+    $teams_entity_ids = $query->execute();
+
+    foreach ($teams_entity_ids as $id) {
+
+      $sorted_teams[] = taxonomy_term_load($id->entity_id);
+    }
+
+    $loc_home->teams = $sorted_teams;
+    $locs_home[] = $loc_home;
+  }
+
+  return $locs_home;
+}
+
+function homepage_render_page() {
+  $output = array(
+    '#theme' => 'custom_homepage_theme',
+    '#type' => 'markup',
+    '#locations' => homepage_locations()
+  );
+
+  return $output;
+}
+
+
+

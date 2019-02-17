@@ -1,0 +1,6 @@
+name = Custom homepage
+description = Description of what this module does
+core = 7.x
+package = My Modules
+
+configure = admin/config/content/custom_homepage

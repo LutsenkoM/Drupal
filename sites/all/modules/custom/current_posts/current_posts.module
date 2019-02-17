@@ -235,14 +235,3 @@ function current_posts_form_validate($form, &$form_state){
     form_set_error('current_posts_max', t('Maximum number of posts to display must be positive.'));
   }
 }
-
-/**
- * Implements hook_permission().
- */
-function current_posts_permission() {
-  return array(
-    'access current_posts content' => array(
-      'title' => t('Access content for the Current posts module'),
-    )
-  );
-}
