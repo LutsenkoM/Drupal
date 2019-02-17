@@ -1,0 +1,51 @@
+<?php
+/**
+ * Implements hook_block_info().
+ */
+function sidebar_blocks_block_info() {
+  $blocks['custom_block'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Custom block'),
+    'pages' => 'taxonomy/term/*',
+  );
+
+  return $blocks;
+}
+
+
+function sidebar_blocks_contents(){
+  $block_content = 'This is block content';
+  return $block_content;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Prepares the contents of the block.
+ */
+function sidebar_blocks_block_view($delta = '') {
+  switch ($delta) {
+    case 'custom_block':
+      $block['subject'] = t('Custom block');
+      if (user_access('access content')) {
+        $block['content'] = sidebar_blocks_contents();
+        $block['my_variable'] = 'MAX!!!';
+      }
+      return $block;
+  }
+}
+
+function hook_theme($existing, $type, $theme, $path) {
+  return array(
+    'forum_display' => array(
+      'variables' => array(
+        'forums' => $type,
+        'topics' => $theme,
+        'parents' => $path,
+        'tid' => $existing,
+        'sortby' => NULL,
+        'forum_per_page' => NULL,
+      ),
+    ),
+  );
+}

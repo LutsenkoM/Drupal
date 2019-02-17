@@ -15,73 +15,6 @@
 function homepage_preprocess_page(&$variables) {
 }
 
-/**
- * Implements hook_block_info().
- */
-function homepage_block_info() {
-  $blocks['sidebar_content'] = array(
-    // The name that will appear in the block list.
-    'info' => t('Teams block'),
-    'visibility' => BLOCK_VISIBILITY_LISTED,
-    'status' => TRUE,
-    'pages' => 'taxonomy/term/*',
-    // Default setting.
-    'cache' => DRUPAL_CACHE_PER_ROLE,
-  );
-
-  $blocks['locations_block'] = array(
-    // The name that will appear in the block list.
-    'info' => t('Locations block'),
-    'visibility' => BLOCK_VISIBILITY_LISTED,
-    'status' => TRUE,
-    'pages' => 'taxonomy/term/*',
-  );
-
-  return $blocks;
-}
-
-function homepage_contents(){
-  $block_content = 'This is block content';
-  return $block_content;
-}
-
-/**
- * Implements hook_block_view().
- *
- * Prepares the contents of the block.
- */
-function homepage_block_view($delta = '') {
-  switch ($delta) {
-    case 'sidebar_content':
-      $block['subject'] = t('Teams block');
-      if (user_access('access content')) {
-        $block['content'] = homepage_contents();
-      }
-
-      return $block;
-  }
-
-}
-
-/**
- * Custom content function.
- *
- * Set beginning and end dates, retrieve posts from database
- * saved in that time period.
- *
- * @return
- *   A result set of the targeted posts.
- */
-//function current_posts_contents(){
-//
-//  //Use Database API to retrieve current posts.
-//  $query = db_select('node', 'n')
-//    ->fields('n', array('nid', 'title', 'created'))
-//    ->condition('status', 1) //Published.
-//    ->orderBy('created', 'DESC'); //Most recent first.
-//
-//  return $query->execute();
-//}
 
 /**
  * Implements hook_menu().
@@ -100,7 +33,7 @@ function homepage_menu() {
   $items['custom_homepage'] = array(
     'title' => variable_get('custom_homepage','Custom homepage'),
     'page callback' => 'homepage_render_page',
-    'access arguments' => array('access current_posts content'),
+    'access arguments' => array('access homepage content'),
     'type' => MENU_NORMAL_ITEM, // Will appear in Navigation menu.
   );
 
@@ -168,5 +101,14 @@ function homepage_render_page() {
   return $output;
 }
 
-
+/**
+ * Implements hook_permission().
+ */
+function homepage_permission() {
+  return array(
+    'access homepage content' => array(
+      'title' => t('Access content for the homepage module'),
+    )
+  );
+}
 
