@@ -1,4 +1,4 @@
-name = Custom block
+name = Custom blocks
 description = Description of what this module does
 core = 7.x
 package = My Modules

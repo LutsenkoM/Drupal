@@ -3,19 +3,72 @@
  * Implements hook_block_info().
  */
 function sidebar_blocks_block_info() {
-  $blocks['custom_block'] = array(
+  $blocks['members_block'] = array(
     // The name that will appear in the block list.
-    'info' => t('Custom block'),
-    'pages' => 'taxonomy/term/*',
+    'info' => t('Members'),
+  );
+  $blocks['teams_block'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Teams'),
   );
 
   return $blocks;
 }
 
+/**
+ * Implements hook_theme().
+ */
+function sidebar_blocks_theme($existing, $type, $theme, $path) {
+  $themes['block__sidebar_blocks'] = array( // replace module--delta with your block template suggestions
+    'variables' => array('block' => array()),
+    'template' => 'block--sidebar_blocks', // the name fo your .tpl.php file.
+    'path' => $path . '/templates',   // path to the template in your module
+  );
 
-function sidebar_blocks_contents(){
-  $block_content = 'This is block content';
-  return $block_content;
+  return $themes;
+}
+
+function sidebar_blocks_members_contents(){
+  $tax_id = arg(2);
+  $term = taxonomy_term_load($tax_id);
+
+  if ($term->vocabulary_machine_name == "team") {
+    $nodes_id = taxonomy_select_nodes($tax_id);
+
+    foreach ($nodes_id as $nod_id) {
+      $node = node_load($nod_id);
+      $items[] = array(
+        'data' => l($node->title, $node->field_member_link['und'][0]['url']),
+      );
+    }
+
+    $block['members'] = array(
+      '#theme' => 'item_list__current_posts__block',
+      '#items' => $items,
+    );
+  } elseif ($term->vocabulary_machine_name == "location") {
+
+    $query = db_select('field_data_field_team_location','n')
+      ->fields('n', array('entity_id') )
+      ->condition('field_team_location_tid', $term->tid);
+
+    $teams_entity_ids = $query->execute();
+
+    foreach ($teams_entity_ids as $id) {
+      $term = taxonomy_term_load($id->entity_id);
+      $items_teams[] = array(
+        'data' => l($term->name, 'taxonomy/term/'.$term->tid),
+      );
+    }
+
+    $block['teams'] = array(
+      '#theme' => 'item_list__current_posts__block',
+      '#items' => $items_teams,
+    );
+
+  }
+
+  return $block;
 }
 
 /**
@@ -25,27 +78,39 @@ function sidebar_blocks_contents(){
  */
 function sidebar_blocks_block_view($delta = '') {
   switch ($delta) {
-    case 'custom_block':
-      $block['subject'] = t('Custom block');
+    case 'members_block':
+      $block['subject'] = t('Members block');
       if (user_access('access content')) {
-        $block['content'] = sidebar_blocks_contents();
-        $block['my_variable'] = 'MAX!!!';
+        $block['content'] = sidebar_blocks_members_contents();
       }
       return $block;
+
+    case 'teams_block':
+      $block['subject'] = t('Teams block');
+      if (user_access('access content')) {
+        $block['content'] = sidebar_blocks_members_contents();
+      }
+      return $block;
+
   }
 }
+//
+//function hook_theme($existing, $type, $theme, $path) {
+//  return array(
+//    'forum_display' => array(
+//      'variables' => array(
+//        'forums' => $type,
+//        'topics' => $theme,
+//        'parents' => $path,
+//        'tid' => $existing,
+//        'sortby' => NULL,
+//        'forum_per_page' => NULL,
+//      ),
+//    ),
+//  );
+//}
 
-function hook_theme($existing, $type, $theme, $path) {
-  return array(
-    'forum_display' => array(
-      'variables' => array(
-        'forums' => $type,
-        'topics' => $theme,
-        'parents' => $path,
-        'tid' => $existing,
-        'sortby' => NULL,
-        'forum_per_page' => NULL,
-      ),
-    ),
-  );
-}
+
+
+//drupal 7 arg
+//path_auto , для кожної категорії
