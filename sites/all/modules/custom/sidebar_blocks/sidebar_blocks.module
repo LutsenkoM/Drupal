@@ -13,6 +13,10 @@ function sidebar_blocks_block_info() {
 }
 
 
+function sidebar_preprocess_block(&$variables) {
+
+}
+
 function sidebar_blocks_contents(){
   $block_content = 'This is block content';
   return $block_content;
@@ -35,7 +39,7 @@ function sidebar_blocks_block_view($delta = '') {
   }
 }
 
-function hook_theme($existing, $type, $theme, $path) {
+function sidebar_blocks_theme($existing, $type, $theme, $path) {
   return array(
     'forum_display' => array(
       'variables' => array(

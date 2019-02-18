@@ -13,6 +13,9 @@
  *   Array that holds the current path as returned from arg() function
  */
 function homepage_preprocess_page(&$variables) {
+
+  $variables['p_page_module'] = 'Variable from preprocess page module';
+
 }
 
 
@@ -80,7 +83,6 @@ function homepage_locations() {
     $teams_entity_ids = $query->execute();
 
     foreach ($teams_entity_ids as $id) {
-
       $sorted_teams[] = taxonomy_term_load($id->entity_id);
     }
 
@@ -111,4 +113,45 @@ function homepage_permission() {
     )
   );
 }
+
+// Create block
+
+/**
+ * Implements hook_block_info().
+ */
+function homepage_block_info() {
+  $blocks['custom_block'] = array(
+    // The name that will appear in the block list.
+    'info' => t('Custom block'),
+    'pages' => 'taxonomy/term/*',
+  );
+
+  return $blocks;
+}
+
+
+function homepage_contents(){
+
+  $block_content = 'This is block content in homepage module';
+  return $block_content;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Prepares the contents of the block.
+ */
+function homepage_block_view($delta = '') {
+  switch ($delta) {
+    case 'custom_block':
+      $block['subject'] = t('Custom block');
+      if (user_access('access content')) {
+        $block['content'] = homepage_contents();
+        $block['my_variable'] = homepage_locations();
+      }
+      return $block;
+  }
+}
+
+
 
