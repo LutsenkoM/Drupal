@@ -70,7 +70,7 @@ function homepage_form($form, &$form_state) {
   $form['settings']['radios'] = array(
     '#type' => 'radios',
     '#title' => t('Color block'),
-//    '#default_value' => variable_get('radio'),
+    '#default_value' => variable_get('radios'),
     '#options' => $active,
     '#description' => t('Background for block'),
   );
@@ -95,10 +95,7 @@ function homepage_theme($existing, $type, $theme, $path) {
 function homepage_locations() {
   $location_home_id = taxonomy_vocabulary_machine_name_load('location');
   $locations_home = entity_load('taxonomy_term', FALSE, array('vid' => $location_home_id->vid));
-
   $locs_home = [];
-
-
 
   foreach ($locations_home as $loc_home) {
     $sorted_teams = [];
@@ -113,7 +110,6 @@ function homepage_locations() {
 
       $sorted_teams[] = taxonomy_term_load($id->entity_id);
     }
-
     $loc_home->teams = $sorted_teams;
     $locs_home[] = $loc_home;
   }
