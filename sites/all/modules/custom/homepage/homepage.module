@@ -75,6 +75,22 @@ function homepage_form($form, &$form_state) {
     '#description' => t('Background for block'),
   );
 
+  $form['pass_confirm'] = array(
+    '#type' => 'password_confirm',
+    '#title' => t('Password Confirm'),
+    '#size' => 25,
+  );
+
+  $form['weight'] = array(
+    '#type' => 'weight',
+    '#title' => t('Weight'),
+    '#default_value' => variable_get('weight'),
+    '#delta' => 10,
+    '#description' => t('Optional.
+In the menu, the heavier items will sink and the lighter items will be
+positioned nearer the top.'),
+  );
+
 
 
   return system_settings_form($form);
@@ -97,18 +113,41 @@ function homepage_locations() {
   $locations_home = entity_load('taxonomy_term', FALSE, array('vid' => $location_home_id->vid));
   $locs_home = [];
 
+// DatabaseStatementInterface:
+//
+// execute - виконання запиту;
+//
+//fetchAllAssoc - повертає результат запиту у вигляді асоціативного масиву ключів заданого поля;
+//fetchAllKeyed - повертає результат як єдиний асоціативний масив;
+//fetchAssoc - вибирає наступний рядок і повертає його в якості асоціативного масиву;
+//fetchCol - повертає стовпець результивного набору, як індексований масив;
+//fetchField - повертає одне поле з наступного запису з результивного набору;
+//getQueryString - повердає рядок запиту;
+//rowCount - повертає кількість рядків, які повертають запит.
+//  https://internetdevels.ua/blog/database-api
+//  https://nikitakiselev.ru/article/rabota-s-bazoy-dannoy-drupal-poluchenie-rezultatov-vyborki
   foreach ($locations_home as $loc_home) {
     $sorted_teams = [];
-    $TEST = variable_get('current_posts_max', 3);
+//    $query = db_select('field_data_field_team_location','n')
+//      ->fields('n', array('entity_id') )
+//      ->condition('field_team_location_tid', $loc_home->tid)
+//      ->execute();
+
     $query = db_select('field_data_field_team_location','n')
-      ->fields('n', array('entity_id') )
-      ->condition('field_team_location_tid', $loc_home->tid);
+//      ->fields('n', array('entity_type', 'entity_id', 'field_team_location_tid') )
+            ->fields('n' )
+      ->condition('field_team_location_tid', $loc_home->tid)
+      ->execute()
+//      ->fetchAllAssoc('field_team_location_tid'); // Array keys its this field values
+//      ->fetchAllKeyed(1,2); // Return two selected columns
+//      ->fetchAssoc();
+    ->fetchCol(3); // Return values from column #3 (entity_id)
+//      ->fetchField(3); // Return value of field #4 in first row
+//    ->getQueryString(2);
+    foreach ($query as $id) {
 
-    $teams_entity_ids = $query->execute();
-
-    foreach ($teams_entity_ids as $id) {
-
-      $sorted_teams[] = taxonomy_term_load($id->entity_id);
+//      $sorted_teams[] = taxonomy_term_load($id->entity_id);
+      $sorted_teams[] = taxonomy_term_load($id);
     }
     $loc_home->teams = $sorted_teams;
     $locs_home[] = $loc_home;
@@ -147,5 +186,12 @@ function homepage_permission() {
       'title' => t('Access content for the homepage module'),
     )
   );
+}
+
+function homepage_form_validate($form, &$form_state){
+  $weight = $form_state['values']['weight'];
+  if ($weight < 0 ){
+    form_set_error('weight', t('You must choose positive number'));
+  }
 }
 
