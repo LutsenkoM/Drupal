@@ -1,4 +1,4 @@
-<?php foreach ($locations as $location) {
+<?php foreach ($locations as $location) :
   $tid = $location->tid;
   $url = entity_uri('taxonomy_term', $location);
   ?>
@@ -21,4 +21,29 @@
             </ul>
         </div>
     </div>
-<?php } ?>
+<?php endforeach; ?>
+<?php
+
+switch ($custom_vars['radios']):
+  case '0':
+    $block_bg = 'none';
+    break;
+  case '1':
+    $block_bg = 'red';
+    break;
+  case '2':
+    $block_bg = 'black';
+    break;
+endswitch;
+
+if ($custom_vars['check'] === 1) : ?>
+<div>
+  <h2>This block shows when checkbox was checked</h2>
+  <div class="description">
+    <?php print render($custom_vars['description']['value']); ?>
+  </div>
+  <div style="width: 400px; height: 400px; border: 1px solid; background: <?php echo $block_bg; ?> ">
+
+  </div>
+</div>
+<?php endif; ?>
