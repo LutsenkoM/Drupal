@@ -103,9 +103,9 @@ positioned nearer the top.'),
 
 function homepage_form_submit($form, &$form_state) {
 
-  variable_set('checkbox', intval($form_state['values']['checkbox']));
-  variable_set('description', intval($form_state['values']['description']));
-  variable_set('radios', intval($form_state['values']['radios']));
+  variable_set('checkbox', $form_state['values']['checkbox']);
+  variable_set('description', $form_state['values']['description']);
+  variable_set('radios', $form_state['values']['radios']);
 
 //  $variables_array = [
 //    'check' =>   variable_set('checkbox', $form_state['values']['checkbox']),
@@ -192,7 +192,6 @@ function homepage_render_page() {
     '#theme' => 'custom_homepage_theme',
     '#type' => 'markup',
     '#locations' => homepage_locations(),
-//    '#custom_vars' => homepage_variables(),
     '#custom_vars' => homepage_variables()
   );
 
