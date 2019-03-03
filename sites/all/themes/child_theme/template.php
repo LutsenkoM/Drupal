@@ -100,7 +100,4 @@ function child_theme_preprocess_block(&$variables) {
 }
 
 
-// hook_form_alter !!!
-// hook_user_insert / hook_user_update
-// If user insert send email (hook_mail) / smtp module, gmail creds
 

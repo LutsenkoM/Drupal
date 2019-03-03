@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function send_mail_menu() {
+  $items = [];
+
+  $items['admin/custom_tab/send_mail'] = array(
+    'title' => 'Send email',
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('access administration pages'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('send_mail_form'),
+  );
+
+  return $items;
+}
+
+function send_mail_form($form, &$form_state) {
+  //https://api.drupal.org/api/drupal/developer%21topics%21forms_api_reference.html/7.x#vertical_tabs
+
+  $form['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Mail to:'),
+    '#default_value' => variable_get('email')
+  );
+
+  $form['subject'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Subject'),
+    '#default_value' => variable_get('subject')
+  );
+
+  $form['body'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Email body'),
+    '#cols ' => 40,
+    '#default_value' => variable_get('body')
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send'),
+  );
+
+//  return system_settings_form($form);
+
+  return $form;
+}
+
+function send_mail_form_alter(&$form, &$form_state, $form_id) {
+    $form['default_message'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('default_message', 0),
+    '#title' => t('Sent default message')
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Send (hook_alert)'),
+  );
+}
+
+function send_mail_form_submit($form, &$form_state) {
+
+  variable_set('email', $form_state['values']['email']);
+  variable_set('subject', $form_state['values']['subject']);
+  variable_set('body', $form_state['values']['body']);
+  variable_set('default_message', $form_state['values']['default_message']);
+
+  $mail_to = variable_get('email');
+
+  $default_message = variable_get('default_message');
+
+  if ($default_message === 1) {
+    $set_key = 'default_message';
+  } else {
+    $set_key = 'send_attachment';
+  }
+
+  drupal_mail(
+    'send_mail',
+    $set_key,
+    $mail_to,
+    language_default(),
+    array(
+      'attachments' => array($form_state['values']['attachment'])
+    )
+  );
+
+  drupal_set_message(t('Email has been sent!'), 'status');
+
+}
+
+/**
+ * Implements hook_mail().
+ */
+function send_mail_mail($key, &$message, $params) {
+  if ($key == 'send_attachment') {
+    $message['subject'] = variable_get('subject');
+    $message['body'][] = variable_get('body');
+  } elseif ($key == 'default_message') {
+    $message['subject'] = 'Default message subject';
+    $message['body'][] = 'Default message body';
+  }
+}
