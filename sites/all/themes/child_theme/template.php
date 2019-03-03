@@ -94,7 +94,13 @@ function child_theme_preprocess_block(&$variables) {
   if (!empty($block['info'])) {
     setlocale(LC_ALL, 'en_US');
 
-    // required for iconv()
+    // required for icon()
     $variables['theme_hook_suggestions'][] = 'block__' . str_replace(' ', '_', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $block['info'])));
   }
 }
+
+
+// hook_form_alter !!!
+// hook_user_insert / hook_user_update
+// If user insert send email (hook_mail) / smtp module, gmail creds
+

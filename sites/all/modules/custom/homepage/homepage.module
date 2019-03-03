@@ -44,7 +44,7 @@ function homepage_menu() {
  * Forms types
 * https://api.drupal.org/api/drupal/developer%21topics%21forms_api_reference.html/7.x
 ***/
-function homepage_form($form, &$form_state) {
+function homepage_form($form, &$form_state) { //https://api.drupal.org/api/drupal/developer%21topics%21forms_api_reference.html/7.x#vertical_tabs
   $form['custom_homepage'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
@@ -135,9 +135,8 @@ function homepage_locations() {
   $locs_home = [];
 
 // DatabaseStatementInterface:
-//
+
 // execute - виконання запиту;
-//
 //fetchAllAssoc - повертає результат запиту у вигляді асоціативного масиву ключів заданого поля;
 //fetchAllKeyed - повертає результат як єдиний асоціативний масив;
 //fetchAssoc - вибирає наступний рядок і повертає його в якості асоціативного масиву;
@@ -154,7 +153,7 @@ function homepage_locations() {
 //      ->condition('field_team_location_tid', $loc_home->tid)
 //      ->execute();
 
-    $query = db_select('field_data_field_team_location','n')
+    $query = db_select('field_data_field_team_location','n') // https://api.drupal.org/api/drupal/includes%21database%21database.inc/interface/DatabaseStatementInterface/7.x
 //      ->fields('n', array('entity_type', 'entity_id', 'field_team_location_tid') )
             ->fields('n' )
       ->condition('field_team_location_tid', $loc_home->tid)

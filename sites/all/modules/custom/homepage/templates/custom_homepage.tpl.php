@@ -40,6 +40,6 @@ if ($custom_vars['check'] === 1) : ?>
 <div>
   <h2>This block shows when checkbox was checked</h2>
   <div class="description"><?php print render($custom_vars['description']['value']); ?></div>
-  <div style="width: 400px; height: 400px; border: 1px solid; background: <?php echo $block_bg; ?> "></div>
+  <div style="width: 200px; height: 200px; border: 1px solid; background: <?php echo $block_bg; ?> "></div>
 </div>
 <?php endif; ?>
