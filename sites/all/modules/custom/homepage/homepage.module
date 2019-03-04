@@ -229,16 +229,3 @@ function homepage_form_validate($form, &$form_state){
     form_set_error('weight', t('Enter password'));
   }
 }
-
-function homepage_form_alter(&$form, &$form_state, $form_id) {
-//  http://drupalbook.ru/drupal/1281-hookformalter-dobavlyaem-submit-i-validate-dlya-sushchestvuyushchey-formy
-//  $form['checkbox'] = array(
-//    '#type' => 'checkbox',
-//    '#default_value' => variable_get('checkbox', 0),
-//    '#title' => t('Fucckkkkkk!!!!!!!!!!!')
-//  );
-}
-
-// hook_form_alter !!!
-// hook_user_insert / hook_user_update
-// If user insert send email (hook_mail) / smtp module, gmail creds
